@@ -661,21 +661,13 @@ module.exports = (common) => {
       })
     })
 
-    // TODO upgrade
     describe('.ls', () => {
       it('with a base58 encoded string', (done) => {
-        const hash = 'QmVvjDy7yF7hdnqE8Hrf4MHo5ABDtb5AbX6hWbD3Y42bXP'
-        ipfs.ls(hash, (err, stream) => {
+       const hash = 'QmVvjDy7yF7hdnqE8Hrf4MHo5ABDtb5AbX6hWbD3Y42bXP'
+        ipfs.ls(hash, (err, files) => {
           expect(err).to.not.exist()
-
-          stream.pipe(concat(gotFiles))
-
-          function gotFiles (files) {
-            expect(files).to.be.length(6)
-            // remove content so that we can compare
-            files.forEach((file) => delete file.content)
-
-            expect(files).to.eql([
+          files.forEach((file) => delete file.content)
+          expect(files).to.deep.equal([
               { depth: 1,
                 name: 'alice.txt',
                 path: 'QmVvjDy7yF7hdnqE8Hrf4MHo5ABDtb5AbX6hWbD3Y42bXP/alice.txt',
@@ -711,11 +703,8 @@ module.exports = (common) => {
                 path: 'QmVvjDy7yF7hdnqE8Hrf4MHo5ABDtb5AbX6hWbD3Y42bXP/pp.txt',
                 size: 4551,
                 hash: 'QmVwdDCY4SPGVFnNCiZnX5CtzwWDn6kAM98JXzKxE3kCmn',
-                type: 'file'
-              }
-            ])
-           }
-          })
+                type: 'file' } ])
+            done()
         })
       })
     })
